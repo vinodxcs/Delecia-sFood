@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delicias Food - Admin Dashboard</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Delicias Food</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="products">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>Products</span>
+                </a>
+                <a href="#" class="nav-item" data-page="categories">
+                    <i class="fas fa-tags"></i>
+                    <span>Categories</span>
+                </a>
+                <a href="#" class="nav-item" data-page="orders">
+                    <i class="fas fa-list"></i>
+                    <span>Orders</span>
+                </a>
+                <a href="#" class="nav-item" data-page="customers">
+                    <i class="fas fa-users"></i>
+                    <span>Customers</span>
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="add-product-btn" onclick="window.location.href='add-item.html'">
+                    <i class="fas fa-plus"></i>
+                    Add Product
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <div class="logo">
+                        <i class="fas fa-utensils"></i>
+                        <span>Delicias Food</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <nav class="header-nav">
+                        <a href="#" class="nav-link active" data-page="dashboard">Dashboard</a>
+                        <a href="#" class="nav-link" data-page="products">Products</a>
+                        <a href="#" class="nav-link" data-page="categories">Categories</a>
+                        <a href="#" class="nav-link" data-page="orders">Orders</a>
+                        <a href="#" class="nav-link" data-page="settings">Settings</a>
+                    </nav>
+                    <div class="notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </div>
+                    <div class="user-profile">
+                        <img src="https://via.placeholder.com/40" alt="Profile" class="profile-img">
+                        <div class="user-menu">
+                            <button class="user-menu-btn" onclick="toggleUserMenu()">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="user-dropdown" id="userDropdown">
+                                <a href="#" onclick="editProfile()">
+                                    <i class="fas fa-user-edit"></i> Edit Profile
+                                </a>
+                                <a href="#" onclick="logout()">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="content" id="dashboard-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="categories-count">0</h3>
+                            <p>Categories</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="items-count">0</h3>
+                            <p>Products</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="orders-count">0</h3>
+                            <p>Orders</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <h3>Recent Orders</h3>
+                        <div class="recent-orders">
+                            <p>No recent orders</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Quick Actions</h3>
+                        <div class="quick-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-plus"></i>
+                                Add Category
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-plus"></i>
+                                Add Product
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-eye"></i>
+                                View Orders
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Content -->
+            <div class="content hidden" id="products-content">
+                <div class="page-header">
+                    <h1>Products</h1>
+                    <p>Manage your products and inventory</p>
+                </div>
+
+                <!-- Category Navigation -->
+                <div class="category-navigation">
+                    <div class="breadcrumb" id="category-breadcrumb">
+                        <span class="breadcrumb-item active" data-category-id="all">All Products</span>
+                    </div>
+                    <div class="category-tree" id="category-tree">
+                        <div class="loading-state">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading categories...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-header">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search products" id="product-search">
+                    </div>
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all">All</button>
+                        <button class="filter-tab" data-filter="active">Active</button>
+                        <button class="filter-tab" data-filter="inactive">Inactive</button>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn-primary" onclick="window.location.href='add-item.html'">
+                            <i class="fas fa-plus"></i> Add Product
+                        </button>
+                    </div>
+                </div>
+
+                <div class="products-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>PRODUCT</th>
+                                <th>CATEGORY PATH</th>
+                                <th>PRICE</th>
+                                <th>STOCK</th>
+                                <th>STATUS</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table-body">
+                            <tr>
+                                <td colspan="6" class="no-data">
+                                    <i class="fas fa-box-open"></i>
+                                    <p>No products found</p>
+                                    <small>Products will appear here once you add them</small>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Categories Content -->
+            <div class="content hidden" id="categories-content">
+                <div class="page-header">
+                    <h1>Manage Categories</h1>
+                    <p>Create, edit, and reorder categories and subcategories for your grocery items.</p>
+                </div>
+                <div class="categories-container">
+                    <div class="categories-card">
+                        <div class="categories-header">
+                            <h3>Category Hierarchy</h3>
+                            <div class="category-actions-header">
+                                <button class="btn-secondary" onclick="expandAllCategories()">
+                                    <i class="fas fa-expand-arrows-alt"></i> Expand All
+                                </button>
+                                <button class="btn-secondary" onclick="collapseAllCategories()">
+                                    <i class="fas fa-compress-arrows-alt"></i> Collapse All
+                                </button>
+                            </div>
+                        </div>
+                        <div class="search-bar">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search categories..." id="category-search">
+                        </div>
+                        <div class="categories-list" id="categories-list">
+                            <div class="loading-state">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Loading categories...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="create-card">
+                        <h3>Create New Category</h3>
+                        <form id="category-form">
+                            <div class="form-group">
+                                <label for="category-name">Category Name</label>
+                                <input type="text" id="category-name" placeholder="e.g. Fruits, Vegetables" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="parent-category">Parent Category</label>
+                                <select id="parent-category">
+                                    <option value="">Select Parent Category (Optional)</option>
+                                </select>
+                                <small class="form-help">Leave empty for main category, select a category for
+                                    subcategory</small>
+                            </div>
+                            <button type="submit" class="create-btn">
+                                <i class="fas fa-plus"></i> Create Category
+                            </button>
+                        </form>
+                        <div class="sample-data-section">
+                            <h4>Quick Setup</h4>
+                            <p>Create sample categories with nested structure for testing:</p>
+                            <button class="btn-sample" onclick="createSampleData()">
+                                <i class="fas fa-magic"></i> Create Sample Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+
+</html>

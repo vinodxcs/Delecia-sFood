@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delicias Food - Edit Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .edit-profile-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+
+        .edit-profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .edit-profile-header h1 {
+            color: #ff6b6b;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .edit-profile-header p {
+            color: #666;
+        }
+
+        .profile-photo-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .current-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ff6b6b;
+            margin-bottom: 15px;
+        }
+
+        .photo-upload-area {
+            display: inline-block;
+            cursor: pointer;
+            padding: 15px;
+            border: 2px dashed #ff6b6b;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .photo-upload-area:hover {
+            background: #fff5f5;
+            border-color: #e55a5a;
+        }
+
+        .photo-upload-area i {
+            color: #ff6b6b;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .photo-upload-text {
+            display: block;
+            color: #ff6b6b;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .photo-upload-area small {
+            color: #999;
+            font-size: 0.8rem;
+        }
+
+        .photo-preview {
+            display: none;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .photo-preview img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ff6b6b;
+        }
+
+        .remove-photo-btn {
+            position: absolute;
+            top: -5px;
+            right: calc(50% - 65px);
+            width: 30px;
+            height: 30px;
+            background: #dc3545;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-photo-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #e55a5a;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            flex: 1;
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #ff6b6b;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #e55a5a;
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="edit-profile-container">
+        <a href="admin-dashboard.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+        <div class="edit-profile-header">
+            <h1>Edit Profile</h1>
+            <p>Update your personal information and profile picture</p>
+        </div>
+
+        <div class="profile-photo-section">
+            <img id="currentPhoto" src="https://via.placeholder.com/120" alt="Current Photo" class="current-photo">
+
+            <div class="photo-upload-area" id="photoUploadArea"
+                onclick="document.getElementById('profileImageInput').click()">
+                <i class="fas fa-camera"></i>
+                <span class="photo-upload-text">Change Photo</span>
+                <small>PNG, JPG up to 5MB</small>
+                <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+            </div>
+
+            <div class="photo-preview" id="photoPreview">
+                <img id="previewImage" src="" alt="Preview">
+                <button type="button" class="remove-photo-btn" onclick="removeNewPhoto()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <form id="editProfileForm">
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="mobileNumber">Mobile Number</label>
+                <input type="tel" id="mobileNumber" required>
+            </div>
+
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select id="role" disabled>
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <small style="color: #666; font-size: 0.8rem;">Role cannot be changed</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Update Profile</button>
+                <a href="admin-dashboard.html" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="edit-profile-script.js"></script>
+</body>
+
+</html>

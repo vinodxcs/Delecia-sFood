@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delicias Food - Category</title>
+    <link rel="stylesheet" href="user-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="user-header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Delicias Food</span>
+            </div>
+
+            <nav class="main-nav">
+                <a href="home.html" class="nav-link">Home</a>
+                <a href="orders.html" class="nav-link">My Orders</a>
+                <a href="profile.html" class="nav-link">Profile</a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search for products..." id="searchInput">
+                </div>
+
+                <div class="cart-icon" onclick="openCart()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+
+                <div class="user-profile" onclick="toggleUserMenu()">
+                    <img id="userProfileImg" src="https://via.placeholder.com/40" alt="Profile" class="profile-img">
+                    <div class="user-menu" id="userMenu">
+                        <a href="profile.html">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                        <a href="orders.html">
+                            <i class="fas fa-list"></i> Orders
+                        </a>
+                        <a href="#" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Category Sidebar -->
+        <aside class="category-sidebar">
+            <div class="sidebar-header">
+                <h3>Categories</h3>
+                <p>Shop by department</p>
+            </div>
+            <div class="category-tree" id="categoryTree">
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading categories...</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Products Section -->
+        <main class="products-main">
+            <div class="products-header">
+                <div class="breadcrumbs" id="breadcrumbs">
+                    <span>Home</span>
+                </div>
+                <h1 id="pageTitle">Category Products</h1>
+                <div class="products-info">
+                    <span id="productsCount">Showing products</span>
+                    <div class="filter-controls">
+                        <select id="sortSelect">
+                            <option value="popularity">Sort by: Popularity</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="name">Name: A to Z</option>
+                        </select>
+                        <select id="organicFilter">
+                            <option value="">Organic</option>
+                            <option value="organic">Organic Only</option>
+                            <option value="non-organic">Non-Organic Only</option>
+                        </select>
+                        <button class="filter-btn" id="saleFilter">On Sale</button>
+                        <select id="priceRange">
+                            <option value="">Price Range</option>
+                            <option value="0-10">$0 - $10</option>
+                            <option value="10-25">$10 - $25</option>
+                            <option value="25-50">$25 - $50</option>
+                            <option value="50+">$50+</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded dynamically -->
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading products...</p>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <!-- Pagination will be loaded dynamically -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Shopping Cart</h3>
+            <button class="close-cart" onclick="closeCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be loaded dynamically -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total: $<span id="cartTotal">0.00</span></span>
+            </div>
+            <button class="checkout-btn" onclick="proceedToCheckout()">
+                <i class="fas fa-lock"></i> Proceed to Checkout
+            </button>
+        </div>
+    </div>
+
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+
+    <!-- Footer -->
+    <footer class="user-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>Delicias Food</span>
+                </div>
+                <p>Freshness delivered to your door.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="home.html">About Us</a></li>
+                    <li><a href="home.html">Contact</a></li>
+                    <li><a href="home.html">FAQ</a></li>
+                    <li><a href="home.html">Terms & Conditions</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="#" onclick="filterByCategory('vegetables')">Vegetables</a></li>
+                    <li><a href="#" onclick="filterByCategory('fruits')">Fruits</a></li>
+                    <li><a href="#" onclick="filterByCategory('bakery')">Bakery</a></li>
+                    <li><a href="#" onclick="filterByCategory('beverages')">Beverages</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 Delicias Food. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="category-script.js"></script>
+</body>
+
+</html>

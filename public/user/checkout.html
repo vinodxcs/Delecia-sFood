@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delicias Food - Checkout</title>
+    <link rel="stylesheet" href="user-styles.css">
+    <link rel="stylesheet" href="user-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="user-header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Delicias Food</span>
+            </div>
+
+            <nav class="main-nav">
+                <a href="home.html" class="nav-link">Home</a>
+                <a href="orders.html" class="nav-link">My Orders</a>
+                <a href="profile.html" class="nav-link">Profile</a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search for products..." id="searchInput">
+                </div>
+
+                <div class="cart-icon" onclick="openCart()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+
+                <div class="user-profile" onclick="toggleUserMenu()">
+                    <img id="userProfileImg" src="https://via.placeholder.com/40" alt="Profile" class="profile-img">
+                    <div class="user-menu" id="userMenu">
+                        <a href="profile.html">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                        <a href="orders.html">
+                            <i class="fas fa-list"></i> Orders
+                        </a>
+                        <a href="#" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <div class="container">
+            <a href="home.html">Home</a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="#" onclick="openCart()">Cart</a>
+            <i class="fas fa-chevron-right"></i>
+            <span class="active">Checkout</span>
+        </div>
+    </nav>
+
+    <!-- Checkout Content -->
+    <main class="checkout-main">
+        <div class="container">
+            <div class="checkout-layout">
+                <!-- Left Column - Checkout Form -->
+                <div class="checkout-form-section">
+                    <h1>Checkout</h1>
+
+                    <!-- Delivery Details -->
+                    <section class="checkout-section">
+                        <div class="section-header">
+                            <div class="section-number">1</div>
+                            <h2>Delivery Details</h2>
+                        </div>
+
+                        <div class="section-content">
+                            <!-- Delivery Address -->
+                            <div class="form-group">
+                                <label for="deliveryAddress">Delivery Address</label>
+                                <textarea id="deliveryAddress" rows="3" placeholder="Enter your full delivery address"
+                                    required></textarea>
+                            </div>
+
+                            <!-- Delivery Time -->
+                            <div class="form-group">
+                                <label>Choose Delivery Time</label>
+                                <div class="delivery-time-options">
+                                    <label class="time-option">
+                                        <input type="radio" name="deliveryTime" value="today-morning" required>
+                                        <span class="time-slot">
+                                            <strong>Today</strong>
+                                            <span>10:00 AM - 2:00 PM</span>
+                                        </span>
+                                    </label>
+                                    <label class="time-option">
+                                        <input type="radio" name="deliveryTime" value="today-evening" required>
+                                        <span class="time-slot">
+                                            <strong>Today</strong>
+                                            <span>6:00 PM - 10:00 PM</span>
+                                        </span>
+                                    </label>
+                                    <label class="time-option">
+                                        <input type="radio" name="deliveryTime" value="tomorrow-morning" required>
+                                        <span class="time-slot">
+                                            <strong>Tomorrow</strong>
+                                            <span>10:00 AM - 2:00 PM</span>
+                                        </span>
+                                    </label>
+                                    <label class="time-option">
+                                        <input type="radio" name="deliveryTime" value="tomorrow-evening" required>
+                                        <span class="time-slot">
+                                            <strong>Tomorrow</strong>
+                                            <span>6:00 PM - 10:00 PM</span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Contact Information -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contactPhone">Phone Number</label>
+                                    <input type="tel" id="contactPhone" placeholder="Your phone number" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contactEmail">Email</label>
+                                    <input type="email" id="contactEmail" placeholder="Your email address" required>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Payment Method -->
+                    <section class="checkout-section">
+                        <div class="section-header">
+                            <div class="section-number">2</div>
+                            <h2>Payment Method</h2>
+                        </div>
+
+                        <div class="section-content">
+                            <div class="payment-methods">
+                                <label class="payment-option">
+                                    <input type="radio" name="paymentMethod" value="card" required>
+                                    <div class="payment-card">
+                                        <i class="fas fa-credit-card"></i>
+                                        <span>Credit/Debit Card</span>
+                                    </div>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="paymentMethod" value="cash" required>
+                                    <div class="payment-card">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                        <span>Cash on Delivery</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- Stripe Payment Form -->
+                            <div id="stripe-payment-form" style="display: none;">
+                                <div class="form-group">
+                                    <label for="card-element">Card Details</label>
+                                    <div id="card-element">
+                                        <!-- Stripe Elements will create form elements here -->
+                                    </div>
+                                    <div id="card-errors" role="alert"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Order Summary -->
+                    <section class="checkout-section">
+                        <div class="section-header">
+                            <div class="section-number">3</div>
+                            <h2>Order Summary</h2>
+                        </div>
+
+                        <div class="section-content">
+                            <div class="order-items" id="orderItems">
+                                <!-- Order items will be loaded dynamically -->
+                            </div>
+
+                            <div class="order-totals">
+                                <div class="total-row">
+                                    <span>Subtotal:</span>
+                                    <span id="subtotal">$0.00</span>
+                                </div>
+                                <div class="total-row">
+                                    <span>Delivery Fee:</span>
+                                    <span id="deliveryFee">$5.00</span>
+                                </div>
+                                <div class="total-row">
+                                    <span>Tax:</span>
+                                    <span id="tax">$0.00</span>
+                                </div>
+                                <div class="total-row total-final">
+                                    <span>Total:</span>
+                                    <span id="total">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Place Order Button -->
+                    <div class="place-order-section">
+                        <button class="place-order-btn" id="placeOrderBtn" onclick="placeOrder()">
+                            <i class="fas fa-lock"></i>
+                            Place Order
+                        </button>
+                        <p class="order-note">
+                            By placing this order, you agree to our Terms of Service and Privacy Policy.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right Column - Order Summary -->
+                <div class="order-summary-section">
+                    <h3>Your Order</h3>
+
+                    <div class="summary-items" id="summaryItems">
+                        <!-- Summary items will be loaded dynamically -->
+                    </div>
+
+                    <div class="summary-totals">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span id="summarySubtotal">$0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Delivery:</span>
+                            <span id="summaryDelivery">$5.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax:</span>
+                            <span id="summaryTax">$0.00</span>
+                        </div>
+                        <div class="summary-row summary-total">
+                            <span>Total:</span>
+                            <span id="summaryTotal">$0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="return-to-cart">
+                        <a href="#" onclick="openCart()">
+                            <i class="fas fa-arrow-left"></i>
+                            Return to Cart
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="user-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>Delicias Food</span>
+                </div>
+                <p>Freshness delivered to your door.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="home.html">About Us</a></li>
+                    <li><a href="home.html">Contact</a></li>
+                    <li><a href="home.html">FAQ</a></li>
+                    <li><a href="home.html">Terms & Conditions</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="#" onclick="filterByCategory('vegetables')">Vegetables</a></li>
+                    <li><a href="#" onclick="filterByCategory('fruits')">Fruits</a></li>
+                    <li><a href="#" onclick="filterByCategory('bakery')">Bakery</a></li>
+                    <li><a href="#" onclick="filterByCategory('beverages')">Beverages</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 Delicias Food. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="checkout-script.js"></script>
+</body>
+
+</html>

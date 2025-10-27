@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Grocery Item - Delicias Food</title>
+    <link rel="stylesheet" href="add-item-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="add-item-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-utensils"></i>
+                    <span>Delicias Food</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <nav class="header-nav">
+                    <a href="admin-dashboard.html" class="nav-link">Home</a>
+                    <a href="#" class="nav-link">Shop</a>
+                    <a href="#" class="nav-link">About</a>
+                    <a href="#" class="nav-link">Contact</a>
+                </nav>
+                <div class="header-actions">
+                    <i class="fas fa-search"></i>
+                    <i class="fas fa-shopping-cart"></i>
+                    <img src="https://via.placeholder.com/40" alt="Profile" class="profile-img">
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <h1>Add New Grocery Item</h1>
+                    <p>Add details for a new item or edit an existing one.</p>
+                </div>
+
+                <form id="add-item-form" class="item-form">
+                    <!-- Item Image Upload -->
+                    <div class="form-section">
+                        <label for="item-image" class="form-label">Item Image</label>
+                        <div class="image-upload-area" id="image-upload-area">
+                            <div class="upload-content">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <i class="fas fa-plus"></i>
+                                <p>Upload a file or drag and drop</p>
+                                <small>PNG, JPG, GIF up to 10MB</small>
+                            </div>
+                            <input type="file" id="item-image" accept="image/*" hidden>
+                        </div>
+                        <div class="image-preview" id="image-preview" style="display: none;">
+                            <img id="preview-img" src="" alt="Preview">
+                            <button type="button" class="remove-image" id="remove-image">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Item Name -->
+                    <div class="form-section">
+                        <label for="item-name" class="form-label">Item Name</label>
+                        <input type="text" id="item-name" placeholder="e.g., Organic Avocados" required>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="form-section">
+                        <label for="item-price" class="form-label">Price</label>
+                        <input type="number" id="item-price" step="0.01" placeholder="e.g., 2.99" required>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-section">
+                        <label for="item-description" class="form-label">Description</label>
+                        <textarea id="item-description" placeholder="Enter item description..." rows="4"></textarea>
+                    </div>
+
+                    <!-- Category Selection -->
+                    <div class="form-section">
+                        <label class="form-label">Category Selection</label>
+                        <div class="category-selection-container">
+                            <!-- Level 1: Main Categories -->
+                            <div class="category-level">
+                                <label for="category-level-1" class="level-label">Main Category</label>
+                                <select id="category-level-1" class="category-select" required>
+                                    <option value="">Select Main Category</option>
+                                </select>
+                            </div>
+
+                            <!-- Level 2: Subcategories -->
+                            <div class="category-level" id="category-level-2-container" style="display: none;">
+                                <label for="category-level-2" class="level-label">Subcategory</label>
+                                <select id="category-level-2" class="category-select">
+                                    <option value="">Select Subcategory (Optional)</option>
+                                </select>
+                            </div>
+
+                            <!-- Level 3: Sub-subcategories -->
+                            <div class="category-level" id="category-level-3-container" style="display: none;">
+                                <label for="category-level-3" class="level-label">Sub-subcategory</label>
+                                <select id="category-level-3" class="category-select">
+                                    <option value="">Select Sub-subcategory (Optional)</option>
+                                </select>
+                            </div>
+
+                            <!-- Level 4: Sub-sub-subcategories -->
+                            <div class="category-level" id="category-level-4-container" style="display: none;">
+                                <label for="category-level-4" class="level-label">Sub-sub-subcategory</label>
+                                <select id="category-level-4" class="category-select">
+                                    <option value="">Select Sub-sub-subcategory (Optional)</option>
+                                </select>
+                            </div>
+
+                            <!-- Level 5: Sub-sub-sub-subcategories -->
+                            <div class="category-level" id="category-level-5-container" style="display: none;">
+                                <label for="category-level-5" class="level-label">Sub-sub-sub-subcategory</label>
+                                <select id="category-level-5" class="category-select">
+                                    <option value="">Select Sub-sub-sub-subcategory (Optional)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Selected Category Path Display -->
+                        <div class="selected-category-path" id="selected-category-path" style="display: none;">
+                            <label class="form-label">Selected Category Path:</label>
+                            <div class="category-path-display" id="category-path-display"></div>
+                        </div>
+                    </div>
+
+                    <!-- Stock -->
+                    <div class="form-section">
+                        <label for="item-stock" class="form-label">Stock Quantity</label>
+                        <input type="number" id="item-stock" placeholder="e.g., 100" min="0" required>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-cancel">Cancel</button>
+                        <button type="submit" class="btn btn-submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="add-item-script.js"></script>
+</body>
+
+</html>
