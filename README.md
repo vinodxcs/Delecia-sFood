@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Delicias Food - Food Management System
 
 A comprehensive food management system with admin dashboard and user-facing e-commerce interface.
@@ -125,3 +126,7 @@ This project is licensed under the MIT License.
 ## Support
 
 For support, email support@deliciasfood.com or create an issue in the GitHub repository.
+=======
+# Delecia-sFood
+This is for Food site 
+>>>>>>> e9f2ca05ab3f08f75ecaff7d7d107aa201404e6f
