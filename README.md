@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Delicias Food - Food Management System
 
 A comprehensive food management system with admin dashboard and user-facing e-commerce interface.
@@ -34,8 +33,8 @@ A comprehensive food management system with admin dashboard and user-facing e-co
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/delicias-food.git
-cd delicias-food
+git clone https://github.com/vinodxcs/Delecia-sFood.git
+cd Delecia-sFood
 ```
 
 2. Install dependencies:
@@ -66,6 +65,7 @@ Create a `.env` file with the following variables:
 ```env
 SUPABASE_URL=your_supabase_url
 SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 JWT_SECRET=your_jwt_secret
 STRIPE_SECRET_KEY=your_stripe_secret_key
 PORT=3000
@@ -126,7 +126,3 @@ This project is licensed under the MIT License.
 ## Support
 
 For support, email support@deliciasfood.com or create an issue in the GitHub repository.
-=======
-# Delecia-sFood
-This is for Food site 
->>>>>>> e9f2ca05ab3f08f75ecaff7d7d107aa201404e6f
