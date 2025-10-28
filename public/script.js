@@ -81,7 +81,6 @@ class AuthManager {
             role: document.getElementById('regRole').value
         };
 
-        console.log('Registration attempt with role:', userData.role); // Debug log
 
         try {
             this.showLoading(true);
@@ -154,7 +153,6 @@ class AuthManager {
             role: document.getElementById('loginRole').value
         };
 
-        console.log('Login attempt with role:', userData.role); // Debug log
 
         try {
             this.showLoading(true);

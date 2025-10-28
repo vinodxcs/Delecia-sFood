@@ -541,7 +541,7 @@ router.get('/public-items', async (req, res) => {
     }
 });
 
-// Public test endpoint (for debugging only)
+// Public endpoint for category tree
 router.get('/test-items', async (req, res) => {
     try {
         const { data, error } = await supabaseAdmin

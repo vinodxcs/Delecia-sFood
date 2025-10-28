@@ -56,106 +56,106 @@
     </header>
 
     <!-- Breadcrumb -->
-    <nav class="breadcrumb">
+    <nav class="checkout-breadcrumb">
         <div class="container">
-            <a href="home.html">Home</a>
-            <i class="fas fa-chevron-right"></i>
-            <a href="#" onclick="openCart()">Cart</a>
-            <i class="fas fa-chevron-right"></i>
-            <span class="active">Checkout</span>
+            <div class="breadcrumb-steps">
+                <span class="step completed">Cart</span>
+                <i class="fas fa-chevron-right"></i>
+                <span class="step active">Delivery</span>
+                <i class="fas fa-chevron-right"></i>
+                <span class="step">Payment</span>
+            </div>
         </div>
     </nav>
 
     <!-- Checkout Content -->
     <main class="checkout-main">
         <div class="container">
-            <div class="checkout-layout">
-                <!-- Left Column - Checkout Form -->
-                <div class="checkout-form-section">
-                    <h1>Checkout</h1>
+            <div class="checkout-grid">
+                <!-- Left Column - Checkout Steps -->
+                <div class="checkout-steps">
+                    <h1 class="checkout-title">Checkout</h1>
 
-                    <!-- Delivery Details -->
-                    <section class="checkout-section">
-                        <div class="section-header">
-                            <div class="section-number">1</div>
-                            <h2>Delivery Details</h2>
+                    <!-- Step 1: Delivery Details -->
+                    <div class="checkout-step active" id="deliveryStep">
+                        <div class="step-header" onclick="toggleStep('delivery')">
+                            <div class="step-indicator">
+                                <span class="step-number">1</span>
+                            </div>
+                            <h2 class="step-title">Delivery Details</h2>
+                            <i class="fas fa-chevron-up step-icon"></i>
                         </div>
 
-                        <div class="section-content">
-                            <!-- Delivery Address -->
-                            <div class="form-group">
-                                <label for="deliveryAddress">Delivery Address</label>
-                                <textarea id="deliveryAddress" rows="3" placeholder="Enter your full delivery address"
-                                    required></textarea>
+                        <div class="step-content" id="deliveryContent">
+                            <!-- Address Selection -->
+                            <div class="address-section">
+                                <h3>Choose a delivery address</h3>
+                                <div class="address-options">
+                                    <label class="address-option">
+                                        <input type="radio" name="deliveryAddress" value="home" checked>
+                                        <div class="address-card">
+                                            <div class="address-label">Home</div>
+                                            <div class="address-text">123 Market St, San Francisco, CA 94103</div>
+                                        </div>
+                                    </label>
+                                    <label class="address-option">
+                                        <input type="radio" name="deliveryAddress" value="work">
+                                        <div class="address-card">
+                                            <div class="address-label">Work</div>
+                                            <div class="address-text">456 Tech Ave, Palo Alto, CA 94301</div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <button class="add-address-btn">
+                                    <i class="fas fa-plus"></i>
+                                    Add New Address
+                                </button>
                             </div>
 
                             <!-- Delivery Time -->
-                            <div class="form-group">
-                                <label>Choose Delivery Time</label>
-                                <div class="delivery-time-options">
-                                    <label class="time-option">
-                                        <input type="radio" name="deliveryTime" value="today-morning" required>
-                                        <span class="time-slot">
-                                            <strong>Today</strong>
-                                            <span>10:00 AM - 2:00 PM</span>
-                                        </span>
-                                    </label>
-                                    <label class="time-option">
-                                        <input type="radio" name="deliveryTime" value="today-evening" required>
-                                        <span class="time-slot">
-                                            <strong>Today</strong>
-                                            <span>6:00 PM - 10:00 PM</span>
-                                        </span>
-                                    </label>
-                                    <label class="time-option">
-                                        <input type="radio" name="deliveryTime" value="tomorrow-morning" required>
-                                        <span class="time-slot">
-                                            <strong>Tomorrow</strong>
-                                            <span>10:00 AM - 2:00 PM</span>
-                                        </span>
-                                    </label>
-                                    <label class="time-option">
-                                        <input type="radio" name="deliveryTime" value="tomorrow-evening" required>
-                                        <span class="time-slot">
-                                            <strong>Tomorrow</strong>
-                                            <span>6:00 PM - 10:00 PM</span>
-                                        </span>
-                                    </label>
+                            <div class="delivery-time-section">
+                                <h3>Choose a delivery time</h3>
+                                <div class="time-slots">
+                                    <button class="time-slot" data-time="today">
+                                        <div class="slot-day">Today</div>
+                                        <div class="slot-time">10am - 2pm</div>
+                                    </button>
+                                    <button class="time-slot selected" data-time="tomorrow">
+                                        <div class="slot-day">Tomorrow</div>
+                                        <div class="slot-time">2pm - 6pm</div>
+                                    </button>
+                                    <button class="time-slot" data-time="friday">
+                                        <div class="slot-day">Friday</div>
+                                        <div class="slot-time">6pm - 10pm</div>
+                                    </button>
                                 </div>
                             </div>
 
-                            <!-- Contact Information -->
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="contactPhone">Phone Number</label>
-                                    <input type="tel" id="contactPhone" placeholder="Your phone number" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="contactEmail">Email</label>
-                                    <input type="email" id="contactEmail" placeholder="Your email address" required>
-                                </div>
+                            <button class="continue-btn">Continue to Payment</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Payment Method -->
+                    <div class="checkout-step" id="paymentStep">
+                        <div class="step-header" onclick="toggleStep('payment')">
+                            <div class="step-indicator">
+                                <span class="step-number">2</span>
                             </div>
-                        </div>
-                    </section>
-
-                    <!-- Payment Method -->
-                    <section class="checkout-section">
-                        <div class="section-header">
-                            <div class="section-number">2</div>
-                            <h2>Payment Method</h2>
+                            <h2 class="step-title">Payment Method</h2>
+                            <i class="fas fa-chevron-down step-icon"></i>
                         </div>
 
-                        <div class="section-content">
+                        <div class="step-content" id="paymentContent" style="display: none;">
                             <div class="payment-methods">
-                                <label class="payment-option">
-                                    <input type="radio" name="paymentMethod" value="card" required>
+                                <label class="payment-method">
+                                    <input type="radio" name="paymentMethod" value="card">
                                     <div class="payment-card">
                                         <i class="fas fa-credit-card"></i>
                                         <span>Credit/Debit Card</span>
                                     </div>
                                 </label>
-                                <label class="payment-option">
-                                    <input type="radio" name="paymentMethod" value="cash" required>
+                                <label class="payment-method">
+                                    <input type="radio" name="paymentMethod" value="cash">
                                     <div class="payment-card">
                                         <i class="fas fa-money-bill-wave"></i>
                                         <span>Cash on Delivery</span>
@@ -174,86 +174,45 @@
                                 </div>
                             </div>
                         </div>
-                    </section>
-
-                    <!-- Order Summary -->
-                    <section class="checkout-section">
-                        <div class="section-header">
-                            <div class="section-number">3</div>
-                            <h2>Order Summary</h2>
-                        </div>
-
-                        <div class="section-content">
-                            <div class="order-items" id="orderItems">
-                                <!-- Order items will be loaded dynamically -->
-                            </div>
-
-                            <div class="order-totals">
-                                <div class="total-row">
-                                    <span>Subtotal:</span>
-                                    <span id="subtotal">$0.00</span>
-                                </div>
-                                <div class="total-row">
-                                    <span>Delivery Fee:</span>
-                                    <span id="deliveryFee">$5.00</span>
-                                </div>
-                                <div class="total-row">
-                                    <span>Tax:</span>
-                                    <span id="tax">$0.00</span>
-                                </div>
-                                <div class="total-row total-final">
-                                    <span>Total:</span>
-                                    <span id="total">$0.00</span>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Place Order Button -->
-                    <div class="place-order-section">
-                        <button class="place-order-btn" id="placeOrderBtn" onclick="placeOrder()">
-                            <i class="fas fa-lock"></i>
-                            Place Order
-                        </button>
-                        <p class="order-note">
-                            By placing this order, you agree to our Terms of Service and Privacy Policy.
-                        </p>
                     </div>
                 </div>
 
                 <!-- Right Column - Order Summary -->
-                <div class="order-summary-section">
-                    <h3>Your Order</h3>
+                <div class="order-summary">
+                    <h2 class="summary-title">Your Order</h2>
 
-                    <div class="summary-items" id="summaryItems">
-                        <!-- Summary items will be loaded dynamically -->
+                    <div class="order-items" id="orderItems">
+                        <!-- Order items will be loaded dynamically -->
                     </div>
 
-                    <div class="summary-totals">
-                        <div class="summary-row">
-                            <span>Subtotal:</span>
-                            <span id="summarySubtotal">$0.00</span>
+                    <div class="order-totals">
+                        <div class="total-line">
+                            <span>Subtotal</span>
+                            <span id="subtotal">$39.49</span>
                         </div>
-                        <div class="summary-row">
-                            <span>Delivery:</span>
-                            <span id="summaryDelivery">$5.00</span>
+                        <div class="total-line">
+                            <span>Delivery Fee</span>
+                            <span id="deliveryFee">$5.00</span>
                         </div>
-                        <div class="summary-row">
-                            <span>Tax:</span>
-                            <span id="summaryTax">$0.00</span>
+                        <div class="total-line">
+                            <span>Taxes</span>
+                            <span id="tax">$3.16</span>
                         </div>
-                        <div class="summary-row summary-total">
-                            <span>Total:</span>
-                            <span id="summaryTotal">$0.00</span>
+                        <div class="total-line total-final">
+                            <span>Total</span>
+                            <span id="total">$47.65</span>
                         </div>
                     </div>
 
-                    <div class="return-to-cart">
-                        <a href="#" onclick="openCart()">
-                            <i class="fas fa-arrow-left"></i>
-                            Return to Cart
-                        </a>
-                    </div>
+                    <button class="place-order-btn" id="placeOrderBtn" onclick="placeOrder()">
+                        <i class="fas fa-lock"></i>
+                        Place Order
+                    </button>
+
+                    <a href="#" class="return-cart-link" onclick="openCart()">
+                        <i class="fas fa-arrow-left"></i>
+                        Return to Cart
+                    </a>
                 </div>
             </div>
         </div>

@@ -52,6 +52,21 @@ class CheckoutManager {
             });
         });
 
+        // Time slot selection
+        document.querySelectorAll('.time-slot').forEach(slot => {
+            slot.addEventListener('click', (e) => {
+                this.selectTimeSlot(e.currentTarget);
+            });
+        });
+
+        // Continue to payment button
+        const continueBtn = document.querySelector('.continue-btn');
+        if (continueBtn) {
+            continueBtn.addEventListener('click', () => {
+                this.continueToPayment();
+            });
+        }
+
         // Form validation
         const form = document.querySelector('.checkout-form-section');
         if (form) {
@@ -335,6 +350,90 @@ class CheckoutManager {
         }
     }
 
+    selectTimeSlot(selectedSlot) {
+        // Remove selected class from all time slots
+        document.querySelectorAll('.time-slot').forEach(slot => {
+            slot.classList.remove('selected');
+        });
+
+        // Add selected class to clicked slot
+        selectedSlot.classList.add('selected');
+    }
+
+    continueToPayment() {
+        // Toggle the payment step
+        this.toggleStep('payment');
+    }
+
+    toggleStep(stepType) {
+        const deliveryStep = document.getElementById('deliveryStep');
+        const paymentStep = document.getElementById('paymentStep');
+        const deliveryContent = document.getElementById('deliveryContent');
+        const paymentContent = document.getElementById('paymentContent');
+
+        if (stepType === 'delivery') {
+            deliveryStep.classList.toggle('active');
+            deliveryContent.style.display = deliveryStep.classList.contains('active') ? 'block' : 'none';
+
+            // Update chevron icon
+            const deliveryIcon = deliveryStep.querySelector('.step-icon');
+            deliveryIcon.className = deliveryStep.classList.contains('active') ? 'fas fa-chevron-up step-icon' : 'fas fa-chevron-down step-icon';
+        } else if (stepType === 'payment') {
+            paymentStep.classList.toggle('active');
+            paymentContent.style.display = paymentStep.classList.contains('active') ? 'block' : 'none';
+
+            // Update chevron icon
+            const paymentIcon = paymentStep.querySelector('.step-icon');
+            paymentIcon.className = paymentStep.classList.contains('active') ? 'fas fa-chevron-up step-icon' : 'fas fa-chevron-down step-icon';
+        }
+    }
+
+    loadOrderSummary() {
+        const orderItemsContainer = document.getElementById('orderItems');
+        const subtotalElement = document.getElementById('subtotal');
+        const taxElement = document.getElementById('tax');
+        const totalElement = document.getElementById('total');
+
+        if (!orderItemsContainer) return;
+
+        // Clear existing items
+        orderItemsContainer.innerHTML = '';
+
+        if (this.cart.length === 0) {
+            orderItemsContainer.innerHTML = '<p>Your cart is empty</p>';
+            return;
+        }
+
+        let subtotal = 0;
+
+        // Add cart items
+        this.cart.forEach(item => {
+            const itemTotal = item.price * item.quantity;
+            subtotal += itemTotal;
+
+            const orderItem = document.createElement('div');
+            orderItem.className = 'order-item';
+            orderItem.innerHTML = `
+                <img src="${item.image_url || 'https://via.placeholder.com/60'}" alt="${item.name}" class="item-image">
+                <div class="item-details">
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-quantity">Qty: ${item.quantity}</div>
+                </div>
+                <div class="item-price">$${itemTotal.toFixed(2)}</div>
+            `;
+            orderItemsContainer.appendChild(orderItem);
+        });
+
+        // Calculate totals
+        const tax = subtotal * this.taxRate;
+        const total = subtotal + this.deliveryFee + tax;
+
+        // Update display
+        if (subtotalElement) subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+        if (taxElement) taxElement.textContent = `$${tax.toFixed(2)}`;
+        if (totalElement) totalElement.textContent = `$${total.toFixed(2)}`;
+    }
+
     showMessage(message, type) {
         // Remove existing messages
         const existingMessages = document.querySelectorAll('.message');
@@ -389,6 +488,13 @@ window.placeOrder = function () {
     const checkoutManager = window.checkoutManager;
     if (checkoutManager) {
         checkoutManager.placeOrder();
+    }
+};
+
+window.toggleStep = function (stepType) {
+    const checkoutManager = window.checkoutManager;
+    if (checkoutManager) {
+        checkoutManager.toggleStep(stepType);
     }
 };
 

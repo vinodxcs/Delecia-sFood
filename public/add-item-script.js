@@ -279,7 +279,7 @@ class AddItemManager {
             const indent = '  '.repeat(level - 1);
             option.textContent = indent + category.name;
 
-            // Add data attributes for debugging
+            // Add data attributes for category tracking
             option.dataset.level = level;
             option.dataset.parentId = category.parent_id || '';
 
