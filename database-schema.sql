@@ -55,6 +55,17 @@ CREATE TABLE IF NOT EXISTS orders (
     total_amount DECIMAL(10,2) NOT NULL,
     status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'shipped', 'delivered', 'cancelled')),
     shipping_address TEXT,
+    contact_phone VARCHAR(20),
+    contact_email VARCHAR(255),
+    delivery_time VARCHAR(100),
+    payment_method VARCHAR(50),
+    subtotal DECIMAL(10,2),
+    delivery_fee DECIMAL(10,2),
+    tax DECIMAL(10,2),
+    tracking_status VARCHAR(50),
+    tracking_note TEXT,
+    confirmed_at TIMESTAMP WITH TIME ZONE,
+    delivered_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -156,6 +167,15 @@ CREATE POLICY "Admins can manage items" ON items
 
 CREATE POLICY "Admins can view all orders" ON orders
     FOR SELECT USING (
+        EXISTS (
+            SELECT 1 FROM users 
+            WHERE users.id = auth.uid() 
+            AND users.role = 'admin'
+        )
+    );
+
+CREATE POLICY "Admins can update orders" ON orders
+    FOR UPDATE USING (
         EXISTS (
             SELECT 1 FROM users 
             WHERE users.id = auth.uid() 

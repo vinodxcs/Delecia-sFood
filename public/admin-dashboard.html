@@ -271,6 +271,58 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Orders Content -->
+            <div class="content hidden" id="orders-content">
+                <div class="page-header">
+                    <h1>Orders</h1>
+                    <p>Review and manage customer orders</p>
+                </div>
+
+                <div class="content-header">
+                    <div class="search-bar">
+                        <i class="fas fa-calendar"></i>
+                        <input type="date" id="orders-start-date">
+                        <span style="margin: 0 8px;">to</span>
+                        <input type="date" id="orders-end-date">
+                    </div>
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-status="all">All</button>
+                        <button class="filter-tab" data-status="pending">Pending</button>
+                        <button class="filter-tab" data-status="confirmed">Confirmed</button>
+                        <button class="filter-tab" data-status="shipped">Shipped</button>
+                        <button class="filter-tab" data-status="delivered">Delivered</button>
+                        <button class="filter-tab" data-status="cancelled">Cancelled</button>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn-primary" id="orders-apply-filter"><i class="fas fa-filter"></i> Apply</button>
+                    </div>
+                </div>
+
+                <div class="products-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>DATE</th>
+                                <th>ORDER</th>
+                                <th>CUSTOMER</th>
+                                <th>ITEMS</th>
+                                <th>TOTAL</th>
+                                <th>STATUS</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body">
+                            <tr>
+                                <td colspan="7" class="no-data">
+                                    <i class="fas fa-box-open"></i>
+                                    <p>No orders found</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 

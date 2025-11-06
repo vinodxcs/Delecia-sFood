@@ -211,7 +211,7 @@ body {
     padding: 60px 0;
     width: 100%;
     margin-top: 0;
-    min-height: 400px;
+    min-height: 300px;
 }
 
 .hero-content {
@@ -222,7 +222,7 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: 50px;
     align-items: center;
-    height: 100%;
+    height: 70%;
 }
 
 .hero-text h1 {
@@ -264,7 +264,7 @@ body {
 
 .hero-image img {
     width: 100%;
-    height: 350px;
+    height:300px;
     object-fit: cover;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -393,6 +393,31 @@ body {
     width: 16px;
     text-align: center;
     font-size: 0.9rem;
+}
+
+/* Nested category items for deeper levels */
+.nested-category-item {
+    margin-left: 16px;
+}
+
+.nested-subcategories {
+    margin-left: 32px;
+    margin-top: 5px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.nested-subcategories.show {
+    max-height: 500px;
+}
+
+.subcategory-link.expanded .expand-icon {
+    transform: rotate(90deg);
+}
+
+.expand-icon {
+    transition: transform 0.3s ease;
 }
 
 /* Products Main Area */
@@ -1529,5 +1554,403 @@ body {
 
     .step-content {
         padding: 0 20px 20px 20px;
+    }
+}
+
+/* Modern Orders Page Styles */
+.orders-main {
+    padding: 40px 0;
+    min-height: calc(100vh - 300px);
+}
+
+.orders-page-header {
+    margin-bottom: 30px;
+}
+
+.orders-title-section h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+
+.orders-subtitle {
+    font-size: 1rem;
+    color: #666;
+    font-weight: 400;
+}
+
+/* Search and Filters */
+.orders-filters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.orders-search {
+    flex: 1;
+    min-width: 300px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.orders-search i {
+    position: absolute;
+    left: 15px;
+    color: #999;
+    font-size: 1rem;
+}
+
+.orders-search input {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.orders-search input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.orders-filter-group {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-dropdown {
+    padding: 12px 35px 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    transition: all 0.3s ease;
+}
+
+.filter-dropdown:hover {
+    border-color: #4CAF50;
+}
+
+.filter-dropdown:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+/* Orders List */
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.order-card-modern {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
+}
+
+.order-card-modern:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.order-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.order-number-section h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 5px;
+}
+
+.order-placed {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0;
+}
+
+.order-status-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.status-delivered {
+    background: #4CAF50;
+}
+
+.status-dot.status-processing,
+.status-dot.status-confirmed {
+    background: #FF9800;
+}
+
+.status-dot.status-pending {
+    background: #2196F3;
+}
+
+.status-dot.status-cancelled {
+    background: #f44336;
+}
+
+.status-dot.status-shipped {
+    background: #9C27B0;
+}
+
+.status-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.order-card-body {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.order-items-preview {
+    display: flex;
+    gap: -10px;
+}
+
+.item-thumbnail {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid white;
+    margin-left: -10px;
+    background: #f5f5f5;
+}
+
+.item-thumbnail:first-child {
+    margin-left: 0;
+}
+
+.item-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.order-summary {
+    flex: 1;
+    min-width: 0;
+}
+
+.order-items-text {
+    font-size: 0.95rem;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.order-items-count {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0;
+}
+
+.order-total-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.order-total-label {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.order-total-amount {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.order-arrow {
+    color: #999;
+    font-size: 1.2rem;
+    opacity: 0.6;
+}
+
+.order-card-modern:hover .order-arrow {
+    opacity: 1;
+    color: #4CAF50;
+}
+
+/* Pagination */
+.orders-pagination {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination-btn {
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid #e0e0e0;
+    background: white;
+    border-radius: 8px;
+    color: #666;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: #f5f5f5;
+    border-color: #4CAF50;
+    color: #4CAF50;
+}
+
+.pagination-btn.active {
+    background: #4CAF50;
+    border-color: #4CAF50;
+    color: white;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-ellipsis {
+    padding: 0 8px;
+    color: #999;
+}
+
+/* Empty State */
+.orders-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.orders-empty-state i {
+    font-size: 4rem;
+    color: #ddd;
+    margin-bottom: 20px;
+}
+
+.orders-empty-state p {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Loading State */
+.loading-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.loading-state i {
+    font-size: 2.5rem;
+    color: #4CAF50;
+    margin-bottom: 15px;
+}
+
+.loading-state p {
+    color: #666;
+    font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .orders-title-section h1 {
+        font-size: 2rem;
+    }
+
+    .orders-filters {
+        flex-direction: column;
+    }
+
+    .orders-search {
+        min-width: 100%;
+    }
+
+    .orders-filter-group {
+        width: 100%;
+    }
+
+    .filter-dropdown {
+        flex: 1;
+    }
+
+    .order-card-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .order-status-section {
+        align-self: flex-start;
+    }
+
+    .order-card-body {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .order-summary {
+        width: 100%;
+    }
+
+    .order-total-section {
+        align-items: flex-start;
+    }
+
+    .order-items-preview {
+        order: -1;
     }
 }

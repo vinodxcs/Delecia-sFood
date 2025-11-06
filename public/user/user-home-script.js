@@ -106,36 +106,46 @@ class UserHomeManager {
             </div>
         `;
 
-        // Add main categories
+        // Add main categories with recursive rendering
         categories.forEach(category => {
-            const hasChildren = category.children && category.children.length > 0;
-            const iconClass = this.getCategoryIcon(category.name);
-
-            categoriesHTML += `
-                <div class="category-item">
-                    <a href="category.html?category=${category.id}&name=${encodeURIComponent(category.name)}" 
-                       class="category-link ${hasChildren ? 'expandable' : ''}" 
-                       ${hasChildren ? `onclick="toggleSubcategories('${category.id}'); return false;"` : ''}>
-                        <i class="${iconClass}"></i>
-                        <span>${category.name}</span>
-                        ${hasChildren ? '<i class="fas fa-chevron-right expand-icon"></i>' : ''}
-                    </a>
-                    ${hasChildren ? `
-                        <div class="subcategories" id="subcategories-${category.id}">
-                            ${category.children.map(subcategory => `
-                                <a href="category.html?category=${subcategory.id}&name=${encodeURIComponent(subcategory.name)}" 
-                                   class="subcategory-link">
-                                    <i class="fas fa-circle"></i>
-                                    <span>${subcategory.name}</span>
-                                </a>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                </div>
-            `;
+            categoriesHTML += this.renderCategoryRecursive(category, 0);
         });
 
         categoryTree.innerHTML = categoriesHTML;
+    }
+
+    renderCategoryRecursive(category, level = 0) {
+        const hasChildren = category.children && category.children.length > 0;
+        const iconClass = this.getCategoryIcon(category.name);
+        const indentClass = level > 0 ? 'subcategory-link' : 'category-link';
+        const containerClass = level === 0 ? 'category-item' : 'nested-category-item';
+        const subcategoryContainerClass = level === 0 ? 'subcategories' : 'nested-subcategories';
+        
+        let html = `
+            <div class="${containerClass}">
+                <div style="display: flex; align-items: center; width: 100%;">
+                    <a href="category.html?category=${category.id}&name=${encodeURIComponent(category.name)}" 
+                       class="${indentClass}"
+                       style="flex: 1;">
+                        ${level > 0 ? '<i class="fas fa-circle"></i>' : `<i class="${iconClass}"></i>`}
+                        <span>${category.name}</span>
+                    </a>
+                    ${hasChildren ? `
+                        <button class="expand-toggle-btn" 
+                                onclick="event.stopPropagation(); toggleSubcategories('${category.id}');" 
+                                style="background: none; border: none; padding: 8px; cursor: pointer; color: #666;">
+                            <i class="fas fa-chevron-right expand-icon" id="icon-${category.id}"></i>
+                        </button>
+                    ` : ''}
+                </div>
+                ${hasChildren ? `
+                    <div class="${subcategoryContainerClass}" id="subcategories-${category.id}">
+                        ${category.children.map(child => this.renderCategoryRecursive(child, level + 1)).join('')}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+        return html;
     }
 
     getCategoryIcon(categoryName) {
@@ -758,11 +768,17 @@ window.navigateToCategory = function (categoryId, categoryName) {
 
 window.toggleSubcategories = function (categoryId) {
     const subcategories = document.getElementById(`subcategories-${categoryId}`);
-    const categoryLink = document.querySelector(`[onclick*="toggleSubcategories('${categoryId}')"]`);
+    const expandIcon = document.getElementById(`icon-${categoryId}`);
 
-    if (subcategories && categoryLink) {
+    if (subcategories) {
         subcategories.classList.toggle('show');
-        categoryLink.classList.toggle('expanded');
+        if (expandIcon) {
+            if (subcategories.classList.contains('show')) {
+                expandIcon.style.transform = 'rotate(90deg)';
+            } else {
+                expandIcon.style.transform = 'rotate(0deg)';
+            }
+        }
     }
 };
 

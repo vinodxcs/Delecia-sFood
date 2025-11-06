@@ -91,12 +91,29 @@ class AdminDashboard {
         }
 
         // Filter tabs
-        document.querySelectorAll('.filter-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                this.setActiveFilter(tab);
-                this.filterProductsByStatus(tab.dataset.filter);
-            });
-        });
+		document.querySelectorAll('.filter-tab').forEach(tab => {
+			// For products page filter buttons
+			if (tab.dataset.filter) {
+				tab.addEventListener('click', () => {
+					this.setActiveFilter(tab);
+					this.filterProductsByStatus(tab.dataset.filter);
+				});
+			}
+			// For orders page status filter buttons
+			if (tab.dataset.status) {
+				tab.addEventListener('click', () => {
+					// Toggle active in orders filter group
+					document.querySelectorAll('#orders-content .filter-tab').forEach(t => t.classList.remove('active'));
+					tab.classList.add('active');
+				});
+			}
+		});
+
+		// Orders apply filter
+		const ordersApplyBtn = document.getElementById('orders-apply-filter');
+		if (ordersApplyBtn) {
+			ordersApplyBtn.addEventListener('click', () => this.loadOrders());
+		}
     }
 
     showPage(page) {
@@ -112,11 +129,13 @@ class AdminDashboard {
         }
 
         // Load page-specific data
-        if (page === 'products') {
+		if (page === 'products') {
             this.loadProducts();
             this.loadCategoryTree();
-        } else if (page === 'categories') {
+		} else if (page === 'categories') {
             this.loadCategories();
+		} else if (page === 'orders') {
+			this.loadOrders();
         }
     }
 
@@ -546,6 +565,114 @@ class AdminDashboard {
         // Implementation for status filtering
     }
 
+	async loadOrders() {
+		try {
+			const startDateInput = document.getElementById('orders-start-date');
+			const endDateInput = document.getElementById('orders-end-date');
+			const activeStatus = document.querySelector('#orders-content .filter-tab.active');
+			const status = activeStatus ? activeStatus.dataset.status : 'all';
+
+			const params = new URLSearchParams();
+			if (startDateInput && startDateInput.value) params.set('start_date', new Date(startDateInput.value).toISOString());
+			if (endDateInput && endDateInput.value) {
+				// Include full day by setting end to 23:59:59Z
+				const end = new Date(endDateInput.value);
+				end.setUTCHours(23, 59, 59, 999);
+				params.set('end_date', end.toISOString());
+			}
+			if (status && status !== 'all') params.set('status', status);
+
+			const url = `/api/admin/orders${params.toString() ? `?${params.toString()}` : ''}`;
+			const response = await fetch(url, {
+				headers: {
+					'Authorization': `Bearer ${this.token}`
+				}
+			});
+
+			if (!response.ok) {
+				this.displayOrders([]);
+				return;
+			}
+
+			const orders = await response.json();
+			this.displayOrders(orders || []);
+		} catch (error) {
+			console.error('Error loading orders:', error);
+			this.displayOrders([]);
+		}
+	}
+
+	displayOrders(orders) {
+		const tbody = document.getElementById('orders-table-body');
+		if (!tbody) return;
+
+		if (!orders || orders.length === 0) {
+			tbody.innerHTML = `
+				<tr>
+					<td colspan="7" class="no-data">
+						<i class="fas fa-box-open"></i>
+						<p>No orders found</p>
+					</td>
+				</tr>
+			`;
+			return;
+		}
+
+		tbody.innerHTML = orders.map(order => {
+			const date = new Date(order.created_at);
+			const itemsCount = Array.isArray(order.order_items) ? order.order_items.reduce((acc, it) => acc + (it.quantity || 0), 0) : 0;
+			const customer = order.users ? `${order.users.name || 'Customer'} (${order.users.email || ''})` : (order.contact_email || '—');
+			const tracking = order.tracking_status ? `<div class="small" style="color:#666;">${order.tracking_status}${order.tracking_note ? ` • ${order.tracking_note}` : ''}</div>` : '';
+
+			const statusBadge = `<span class="status-badge ${order.status}">${order.status}</span>`;
+
+			return `
+				<tr>
+					<td>${date.toLocaleDateString()}<div class="small" style="color:#666;">${date.toLocaleTimeString()}</div></td>
+					<td>${order.id.substring(0, 8)}…</td>
+					<td>${customer}</td>
+					<td>${itemsCount}</td>
+					<td>$${Number(order.total_amount || 0).toFixed(2)}</td>
+					<td>${statusBadge}${tracking}</td>
+					<td>
+						<div style="display:flex; gap:6px; flex-wrap:wrap;">
+							<button class="btn-secondary" onclick="updateOrderStatus('${order.id}','confirmed')">Confirm</button>
+							<button class="btn-secondary" onclick="updateOrderStatus('${order.id}','shipped')">Ship</button>
+							<button class="btn-secondary" onclick="updateOrderStatus('${order.id}','delivered')">Deliver</button>
+						</div>
+					</td>
+				</tr>
+			`;
+		}).join('');
+	}
+
+	async updateOrderStatus(orderId, status) {
+		try {
+			const payload = { status };
+			if (status === 'shipped') payload.tracking_status = 'In transit';
+			if (status === 'delivered') payload.tracking_status = 'Delivered';
+
+			const response = await fetch(`/api/admin/orders/${orderId}/status`, {
+				method: 'PUT',
+				headers: {
+					'Authorization': `Bearer ${this.token}`,
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(payload)
+			});
+
+			if (!response.ok) {
+				this.showMessage('Failed to update order', 'error');
+				return;
+			}
+
+			this.showMessage('Order updated', 'success');
+			this.loadOrders();
+		} catch (error) {
+			this.showMessage('Network error updating order', 'error');
+		}
+	}
+
     showLoading(show) {
         const form = document.getElementById('category-form');
         const submitBtn = form?.querySelector('button[type="submit"]');
@@ -815,6 +942,14 @@ window.deleteProduct = function (id) {
     if (dashboard) {
         dashboard.deleteProduct(id);
     }
+};
+
+// Global functions for orders management
+window.updateOrderStatus = function (orderId, status) {
+	const dashboard = window.adminDashboard;
+	if (dashboard) {
+		dashboard.updateOrderStatus(orderId, status);
+	}
 };
 
 // Global function for creating sample data

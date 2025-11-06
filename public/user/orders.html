@@ -37,7 +37,7 @@
                 </div>
 
                 <div class="user-profile" onclick="toggleUserMenu()">
-                    <img id="userProfileImg" src="https://via.placeholder.com/40" alt="Profile" class="profile-img">
+                    <img id="userProfileImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='18' fill='%23ddd'/%3E%3Ctext x='20' y='25' font-size='20' text-anchor='middle' fill='%23999'%3E%3F%3C/text%3E%3C/svg%3E" alt="Profile" class="profile-img">
                     <div class="user-menu" id="userMenu">
                         <a href="profile.html">
                             <i class="fas fa-user"></i> Profile
@@ -54,28 +54,53 @@
         </div>
     </header>
 
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb">
-        <div class="container">
-            <a href="home.html">Home</a>
-            <i class="fas fa-chevron-right"></i>
-            <span class="active">My Orders</span>
-        </div>
-    </nav>
-
     <!-- Orders Content -->
     <main class="orders-main">
         <div class="container">
-            <div class="orders-header">
-                <h1>My Orders</h1>
-                <p>Track your order history and status</p>
+            <!-- Page Header -->
+            <div class="orders-page-header">
+                <div class="orders-title-section">
+                    <h1>My Orders</h1>
+                    <p class="orders-subtitle">View your past and current orders</p>
+                </div>
             </div>
 
-            <div class="orders-content" id="ordersContent">
+            <!-- Search and Filters -->
+            <div class="orders-filters">
+                <div class="orders-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="ordersSearchInput" placeholder="Search by item or order ID">
+                </div>
+                <div class="orders-filter-group">
+                    <select id="statusFilter" class="filter-dropdown">
+                        <option value="">Order Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <select id="dateFilter" class="filter-dropdown">
+                        <option value="">Date Range</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="all">All Time</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Orders List -->
+            <div class="orders-list" id="ordersContent">
                 <div class="loading-state">
                     <i class="fas fa-spinner fa-spin"></i>
                     <p>Loading your orders...</p>
                 </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="orders-pagination" id="ordersPagination">
+                <!-- Pagination will be generated dynamically -->
             </div>
         </div>
     </main>

@@ -4,6 +4,12 @@ class OrdersManager {
         this.currentUser = null;
         this.token = localStorage.getItem('token');
         this.orders = [];
+        this.filteredOrders = [];
+        this.currentPage = 1;
+        this.itemsPerPage = 10;
+        this.searchTerm = '';
+        this.statusFilter = '';
+        this.dateFilter = '';
         this.init();
     }
 
@@ -30,13 +36,92 @@ class OrdersManager {
     }
 
     setupEventListeners() {
-        // Search functionality
+        // Orders page search
+        const ordersSearchInput = document.getElementById('ordersSearchInput');
+        if (ordersSearchInput) {
+            ordersSearchInput.addEventListener('input', (e) => {
+                this.searchTerm = e.target.value.toLowerCase();
+                this.applyFilters();
+            });
+        }
+
+        // Status filter
+        const statusFilter = document.getElementById('statusFilter');
+        if (statusFilter) {
+            statusFilter.addEventListener('change', (e) => {
+                this.statusFilter = e.target.value;
+                this.applyFilters();
+            });
+        }
+
+        // Date filter
+        const dateFilter = document.getElementById('dateFilter');
+        if (dateFilter) {
+            dateFilter.addEventListener('change', (e) => {
+                this.dateFilter = e.target.value;
+                this.applyFilters();
+            });
+        }
+
+        // Header search (for product search)
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
-                this.handleSearch(e.target.value);
+                if (e.target.value.length > 0) {
+                    window.location.href = `home.html?search=${encodeURIComponent(e.target.value)}`;
+                }
             });
         }
+    }
+
+    applyFilters() {
+        this.filteredOrders = this.orders.filter(order => {
+            // Search filter
+            if (this.searchTerm) {
+                const orderId = order.id.toLowerCase();
+                const itemNames = order.order_items?.map(item => 
+                    item.items?.name?.toLowerCase() || ''
+                ).join(' ') || '';
+                
+                if (!orderId.includes(this.searchTerm) && !itemNames.includes(this.searchTerm)) {
+                    return false;
+                }
+            }
+
+            // Status filter
+            if (this.statusFilter && order.status !== this.statusFilter) {
+                return false;
+            }
+
+            // Date filter
+            if (this.dateFilter) {
+                const orderDate = new Date(order.created_at);
+                const now = new Date();
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const weekAgo = new Date(today);
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                const monthAgo = new Date(today);
+                monthAgo.setMonth(monthAgo.getMonth() - 1);
+
+                switch (this.dateFilter) {
+                    case 'today':
+                        if (orderDate < today) return false;
+                        break;
+                    case 'week':
+                        if (orderDate < weekAgo) return false;
+                        break;
+                    case 'month':
+                        if (orderDate < monthAgo) return false;
+                        break;
+                }
+            }
+
+            return true;
+        });
+
+        this.currentPage = 1;
+        this.displayOrders();
+        this.displayPagination();
     }
 
     async loadOrders() {
@@ -50,7 +135,9 @@ class OrdersManager {
 
             if (response.ok) {
                 this.orders = await response.json();
+                this.filteredOrders = [...this.orders];
                 this.displayOrders();
+                this.displayPagination();
             } else {
                 this.showOrdersError();
             }
@@ -62,10 +149,11 @@ class OrdersManager {
 
     displayOrders() {
         const ordersContent = document.getElementById('ordersContent');
+        const ordersToDisplay = this.filteredOrders.length > 0 ? this.filteredOrders : this.orders;
 
-        if (!this.orders || this.orders.length === 0) {
+        if (!ordersToDisplay || ordersToDisplay.length === 0) {
             ordersContent.innerHTML = `
-                <div class="loading-state">
+                <div class="orders-empty-state">
                     <i class="fas fa-shopping-cart"></i>
                     <p>No orders found</p>
                     <a href="home.html" class="btn-primary">Start Shopping</a>
@@ -74,55 +162,131 @@ class OrdersManager {
             return;
         }
 
-        ordersContent.innerHTML = this.orders.map(order => `
-            <div class="order-card">
-                <div class="order-header">
-                    <div class="order-info">
-                        <h3>Order #${order.id.slice(-8)}</h3>
-                        <p class="order-date">${new Date(order.created_at).toLocaleDateString()}</p>
-                    </div>
-                    <div class="order-status">
-                        <span class="status-badge ${order.status}">${this.getStatusText(order.status)}</span>
-                    </div>
-                </div>
-                
-                <div class="order-items">
-                    ${order.order_items.map(item => `
-                        <div class="order-item">
-                            <img src="${item.items?.image_url || 'https://via.placeholder.com/60'}" 
-                                 alt="${item.items?.name || 'Item'}" class="item-image">
-                            <div class="item-info">
-                                <h4>${item.items?.name || 'Unknown Item'}</h4>
-                                <p>Quantity: ${item.quantity}</p>
-                                <span class="item-price">$${item.price}</span>
-                            </div>
+        // Paginate orders
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        const paginatedOrders = ordersToDisplay.slice(startIndex, endIndex);
+
+        ordersContent.innerHTML = paginatedOrders.map(order => {
+            const orderDate = new Date(order.created_at);
+            const formattedDate = orderDate.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+            
+            // Format order number (e.g., 123-456789)
+            const orderParts = order.id.split('-');
+            const orderNumber = orderParts.length > 1 
+                ? `${orderParts[0].slice(-3)}-${orderParts[orderParts.length - 1].slice(0, 6)}` 
+                : `123-${order.id.slice(-6)}`;
+            const itemCount = order.order_items?.length || 0;
+            const itemNames = order.order_items?.map(item => item.items?.name || 'Item').join(', ') || 'No items';
+            const itemImages = order.order_items?.slice(0, 3).map(item => 
+                item.items?.image_url || 'https://via.placeholder.com/50'
+            ) || [];
+
+            return `
+                <div class="order-card-modern" onclick="viewOrderDetails('${order.id}')">
+                    <div class="order-card-header">
+                        <div class="order-number-section">
+                            <h3>Order #${orderNumber}</h3>
+                            <p class="order-placed">Placed on: ${formattedDate}</p>
                         </div>
-                    `).join('')}
-                </div>
-                
-                <div class="order-footer">
-                    <div class="order-total">
-                        <span>Total: $${order.total_amount}</span>
+                        <div class="order-status-section">
+                            <span class="status-dot status-${order.status}"></span>
+                            <span class="status-text">${this.getStatusText(order.status)}</span>
+                        </div>
                     </div>
-                    <div class="order-actions">
-                        <button class="btn-secondary" onclick="viewOrderDetails('${order.id}')">
-                            View Details
-                        </button>
-                        ${order.status === 'pending' ? `
-                            <button class="btn-danger" onclick="cancelOrder('${order.id}')">
-                                Cancel Order
-                            </button>
-                        ` : ''}
+                    <div class="order-card-body">
+                        <div class="order-items-preview">
+                            ${itemImages.map(img => `
+                                <div class="item-thumbnail">
+                                    <img src="${img}" alt="Item">
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="order-summary">
+                            <p class="order-items-text">${itemNames}</p>
+                            <p class="order-items-count">${itemCount} item${itemCount !== 1 ? 's' : ''}</p>
+                        </div>
+                        <div class="order-total-section">
+                            <span class="order-total-label">Total:</span>
+                            <span class="order-total-amount">$${parseFloat(order.total_amount).toFixed(2)}</span>
+                        </div>
+                        <div class="order-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
+    }
+
+    displayPagination() {
+        const paginationContainer = document.getElementById('ordersPagination');
+        const ordersToDisplay = this.filteredOrders.length > 0 ? this.filteredOrders : this.orders;
+        const totalPages = Math.ceil(ordersToDisplay.length / this.itemsPerPage);
+
+        if (totalPages <= 1) {
+            paginationContainer.innerHTML = '';
+            return;
+        }
+
+        let paginationHTML = '<div class="pagination-controls">';
+        
+        // Previous button
+        paginationHTML += `
+            <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} 
+                    onclick="window.ordersManager.goToPage(${this.currentPage - 1})">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        `;
+
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= this.currentPage - 1 && i <= this.currentPage + 1)) {
+                paginationHTML += `
+                    <button class="pagination-btn ${i === this.currentPage ? 'active' : ''}" 
+                            onclick="window.ordersManager.goToPage(${i})">
+                        ${i}
+                    </button>
+                `;
+            } else if (i === this.currentPage - 2 || i === this.currentPage + 2) {
+                paginationHTML += `<span class="pagination-ellipsis">...</span>`;
+            }
+        }
+
+        // Next button
+        paginationHTML += `
+            <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} 
+                    onclick="window.ordersManager.goToPage(${this.currentPage + 1})">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        `;
+
+        paginationHTML += '</div>';
+        paginationContainer.innerHTML = paginationHTML;
+    }
+
+    goToPage(page) {
+        const ordersToDisplay = this.filteredOrders.length > 0 ? this.filteredOrders : this.orders;
+        const totalPages = Math.ceil(ordersToDisplay.length / this.itemsPerPage);
+        
+        if (page >= 1 && page <= totalPages) {
+            this.currentPage = page;
+            this.displayOrders();
+            this.displayPagination();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     }
 
     getStatusText(status) {
         const statusMap = {
             'pending': 'Pending',
-            'confirmed': 'Confirmed',
+            'confirmed': 'Processing',
             'shipped': 'Shipped',
             'delivered': 'Delivered',
             'cancelled': 'Cancelled'

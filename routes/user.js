@@ -22,7 +22,20 @@ const verifyUserToken = (req, res, next) => {
     }
 };
 
-// Apply user middleware to all routes
+// Get Stripe publishable key (public endpoint, no auth required)
+router.get('/stripe-publishable-key', (req, res) => {
+    try {
+        const publishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
+        if (!publishableKey || publishableKey.includes('your_stripe')) {
+            return res.status(404).json({ error: 'Stripe publishable key not configured' });
+        }
+        res.json({ publishableKey });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to retrieve Stripe key' });
+    }
+});
+
+// Apply user middleware to all routes below
 router.use(verifyUserToken);
 
 // Get user profile

@@ -4,7 +4,13 @@ const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
-// Middleware to verify admin token
+// Allowed admin email list (add more as needed)
+const allowedAdminEmails = [
+    'vinodedge21@gmail.com',
+    'delicia.admin1@example.com',
+    'delicia.admin2@example.com'
+];
+
 const verifyAdminToken = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
@@ -371,6 +377,128 @@ router.delete('/items/:id', async (req, res) => {
         }
 
         res.json({ message: 'Item deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Orders management (admin)
+router.get('/orders', async (req, res) => {
+    try {
+        const { start_date, end_date, status } = req.query;
+
+        let query = supabaseAdmin
+            .from('orders')
+            .select(`
+                *,
+                users:user_id (
+                    id,
+                    name,
+                    email,
+                    mobile_number
+                ),
+                order_items (
+                    *,
+                    items (
+                        name,
+                        price,
+                        image_url
+                    )
+                )
+            `)
+            .order('created_at', { ascending: false });
+
+        if (status && status !== 'all') {
+            query = query.eq('status', status);
+        }
+
+        if (start_date) {
+            query = query.gte('created_at', start_date);
+        }
+
+        if (end_date) {
+            query = query.lte('created_at', end_date);
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+            return res.status(400).json({ error: error.message });
+        }
+
+        res.json(data || []);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.get('/orders/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const { data, error } = await supabaseAdmin
+            .from('orders')
+            .select(`
+                *,
+                users:user_id (
+                    id,
+                    name,
+                    email,
+                    mobile_number
+                ),
+                order_items (
+                    *,
+                    items (
+                        name,
+                        price,
+                        image_url
+                    )
+                )
+            `)
+            .eq('id', id)
+            .single();
+
+        if (error) {
+            return res.status(400).json({ error: 'Order not found' });
+        }
+
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.put('/orders/:id/status', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status, tracking_status, tracking_note } = req.body;
+
+        const update = {
+            updated_at: new Date().toISOString()
+        };
+
+        if (status) update.status = status;
+        if (tracking_status !== undefined) update.tracking_status = tracking_status;
+        if (tracking_note !== undefined) update.tracking_note = tracking_note;
+        if (status === 'confirmed') update.confirmed_at = new Date().toISOString();
+        if (status === 'delivered') update.delivered_at = new Date().toISOString();
+
+        const { data, error } = await supabaseAdmin
+            .from('orders')
+            .update(update)
+            .eq('id', id)
+            .select()
+            .single();
+
+            if (error) {
+                console.error('Order update failed:', error);
+                return res.status(400).json({ error: error.message || error.details || 'Order update failed' });
+            }
+
+        res.json({
+            message: 'Order updated successfully',
+            order: data
+        });
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }

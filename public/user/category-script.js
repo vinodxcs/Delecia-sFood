@@ -135,36 +135,47 @@ class CategoryPageManager {
             </div>
         `;
 
-        // Add main categories
+        // Add main categories with recursive rendering
         categories.forEach(category => {
-            const hasChildren = category.children && category.children.length > 0;
-            const iconClass = this.getCategoryIcon(category.name);
-            const isActive = this.currentCategory === category.id;
-
-            categoriesHTML += `
-                <div class="category-item">
-                    <a href="category.html?category=${category.id}&name=${encodeURIComponent(category.name)}" 
-                       class="category-link ${isActive ? 'active' : ''} ${hasChildren ? 'expandable' : ''}">
-                        <i class="${iconClass}"></i>
-                        <span>${category.name}</span>
-                        ${hasChildren ? '<i class="fas fa-chevron-right expand-icon"></i>' : ''}
-                    </a>
-                    ${hasChildren ? `
-                        <div class="subcategories ${isActive ? 'show' : ''}" id="subcategories-${category.id}">
-                            ${category.children.map(subcategory => `
-                                <a href="category.html?category=${subcategory.id}&name=${encodeURIComponent(subcategory.name)}" 
-                                   class="subcategory-link ${this.currentCategory === subcategory.id ? 'active' : ''}">
-                                    <i class="fas fa-circle"></i>
-                                    <span>${subcategory.name}</span>
-                                </a>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                </div>
-            `;
+            categoriesHTML += this.renderCategoryRecursive(category, 0);
         });
 
         categoryTree.innerHTML = categoriesHTML;
+    }
+
+    renderCategoryRecursive(category, level = 0) {
+        const hasChildren = category.children && category.children.length > 0;
+        const iconClass = this.getCategoryIcon(category.name);
+        const isActive = this.currentCategory === category.id;
+        const indentClass = level > 0 ? 'subcategory-link' : 'category-link';
+        const containerClass = level === 0 ? 'category-item' : 'nested-category-item';
+        const subcategoryContainerClass = level === 0 ? 'subcategories' : 'nested-subcategories';
+        
+        let html = `
+            <div class="${containerClass}">
+                <div style="display: flex; align-items: center; width: 100%;">
+                    <a href="category.html?category=${category.id}&name=${encodeURIComponent(category.name)}" 
+                       class="${indentClass} ${isActive ? 'active' : ''}"
+                       style="flex: 1;">
+                        ${level > 0 ? '<i class="fas fa-circle"></i>' : `<i class="${iconClass}"></i>`}
+                        <span>${category.name}</span>
+                    </a>
+                    ${hasChildren ? `
+                        <button class="expand-toggle-btn" 
+                                onclick="event.stopPropagation(); toggleSubcategories('${category.id}');" 
+                                style="background: none; border: none; padding: 8px; cursor: pointer; color: #666;">
+                            <i class="fas fa-chevron-right expand-icon" id="icon-${category.id}"></i>
+                        </button>
+                    ` : ''}
+                </div>
+                ${hasChildren ? `
+                    <div class="${subcategoryContainerClass} ${isActive ? 'show' : ''}" id="subcategories-${category.id}">
+                        ${category.children.map(child => this.renderCategoryRecursive(child, level + 1)).join('')}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+        return html;
     }
 
     getCategoryIcon(categoryName) {
@@ -564,6 +575,22 @@ window.updateQuantity = function (productId, change) {
     const categoryManager = window.categoryPageManager;
     if (categoryManager) {
         categoryManager.addToCart(productId);
+    }
+};
+
+window.toggleSubcategories = function (categoryId) {
+    const subcategories = document.getElementById(`subcategories-${categoryId}`);
+    const expandIcon = document.getElementById(`icon-${categoryId}`);
+
+    if (subcategories) {
+        subcategories.classList.toggle('show');
+        if (expandIcon) {
+            if (subcategories.classList.contains('show')) {
+                expandIcon.style.transform = 'rotate(90deg)';
+            } else {
+                expandIcon.style.transform = 'rotate(0deg)';
+            }
+        }
     }
 };
 
